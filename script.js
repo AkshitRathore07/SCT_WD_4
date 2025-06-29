@@ -1,105 +1,58 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #fce4ec, #f3e5f5);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100vh;
-  padding-top: 3rem;
-  margin: 0;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const addBtn = document.getElementById("addBtn");
+  const taskTitle = document.getElementById("taskTitle");
+  const taskDate = document.getElementById("taskDate");
+  const taskTime = document.getElementById("taskTime");
+  const taskList = document.getElementById("taskList");
 
-.todo-container {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-  width: 90%;
-  max-width: 600px;
-}
+  addBtn.addEventListener("click", addTask);
 
-h1 {
-  text-align: center;
-  margin-bottom: 1rem;
-  color: #7b1fa2;
-}
+  function addTask() {
+    const title = taskTitle.value.trim();
+    const date = taskDate.value;
+    const time = taskTime.value;
 
-.input-group {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
+    if (!title) {
+      alert("Please enter a task title.");
+      return;
+    }
 
-.input-group input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  flex: 1;
-}
+    const li = document.createElement("li");
 
-#addBtn {
-  background: #7b1fa2;
-  color: white;
-  padding: 0.6rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
+    const taskSpan = document.createElement("span");
+    taskSpan.textContent = `${title} - ${date || "No Date"} ${time || ""}`;
 
-#addBtn:hover {
-  background: #6a1b9a;
-}
+    const actions = document.createElement("div");
+    actions.classList.add("actions");
 
-#taskList {
-  list-style: none;
-  padding: 0;
-}
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "✏️";
+    editBtn.classList.add("edit");
+    editBtn.onclick = () => editTask(taskSpan);
 
-.task-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #e0e0e0;
-  padding: 0.7rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-}
+    const completeBtn = document.createElement("button");
+    completeBtn.textContent = "✔️";
+    completeBtn.classList.add("complete");
+    completeBtn.onclick = () => li.classList.toggle("completed");
 
-.task-item.completed .title {
-  text-decoration: line-through;
-  color: gray;
-}
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "❌";
+    deleteBtn.classList.add("delete");
+    deleteBtn.onclick = () => li.remove();
 
-.task-info {
-  flex: 1;
-}
+    actions.append(editBtn, completeBtn, deleteBtn);
+    li.append(taskSpan, actions);
+    taskList.appendChild(li);
 
-.task-info .datetime {
-  font-size: 0.85rem;
-  color: #666;
-}
+    taskTitle.value = "";
+    taskDate.value = "";
+    taskTime.value = "";
+  }
 
-.task-actions button {
-  margin-left: 0.3rem;
-  padding: 0.4rem 0.6rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.task-actions .complete {
-  background: #4caf50;
-  color: white;
-}
-
-.task-actions .edit {
-  background: #ff9800;
-  color: white;
-}
-
-.task-actions .delete {
-  background: #f44336;
-  color: white;
-}
+  function editTask(taskSpan) {
+    const newText = prompt("Edit your task:", taskSpan.textContent);
+    if (newText !== null && newText.trim() !== "") {
+      taskSpan.textContent = newText.trim();
+    }
+  }
+});
