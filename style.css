@@ -1,0 +1,98 @@
+const taskList = document.getElementById("taskList");
+const taskTitle = document.getElementById("taskTitle");
+const taskDate = document.getElementById("taskDate");
+const taskTime = document.getElementById("taskTime");
+const addBtn = document.getElementById("addBtn");
+
+let tasks = [];
+
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach((task, index) => {
+    const li = document.createElement('li');
+    li.className = `task-item ${task.completed ? 'completed' : ''}`;
+    
+    const info = document.createElement('div');
+    info.className = 'task-info';
+
+    const title = document.createElement('div');
+    title.className = 'title';
+    title.textContent = task.title;
+
+    const datetime = document.createElement('div');
+    datetime.className = 'datetime';
+    datetime.textContent = `${task.date} ${task.time}`;
+
+    info.appendChild(title);
+    info.appendChild(datetime);
+
+    const actions = document.createElement('div');
+    actions.className = 'task-actions';
+
+    const completeBtn = document.createElement('button');
+    completeBtn.textContent = task.completed ? "Undo" : "Complete";
+    completeBtn.className = 'complete';
+    completeBtn.onclick = () => toggleComplete(index);
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'edit';
+    editBtn.onclick = () => editTask(index);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'delete';
+    deleteBtn.onclick = () => deleteTask(index);
+
+    actions.appendChild(completeBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+
+    li.appendChild(info);
+    li.appendChild(actions);
+    taskList.appendChild(li);
+  });
+}
+
+function addTask() {
+  const title = taskTitle.value.trim();
+  const date = taskDate.value;
+  const time = taskTime.value;
+
+  if (!title || !date || !time) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  tasks.push({ title, date, time, completed: false });
+  taskTitle.value = '';
+  taskDate.value = '';
+  taskTime.value = '';
+  renderTasks();
+}
+
+function toggleComplete(index) {
+  tasks[index].completed = !tasks[index].completed;
+  renderTasks();
+}
+
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  renderTasks();
+}
+
+function editTask(index) {
+  const task = tasks[index];
+  const newTitle = prompt("Edit Task Title:", task.title);
+  const newDate = prompt("Edit Date (YYYY-MM-DD):", task.date);
+  const newTime = prompt("Edit Time (HH:MM):", task.time);
+
+  if (newTitle && newDate && newTime) {
+    task.title = newTitle;
+    task.date = newDate;
+    task.time = newTime;
+    renderTasks();
+  }
+}
+
+addBtn.addEventListener("click", addTask);
